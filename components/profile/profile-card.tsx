@@ -41,11 +41,16 @@ const ProfileCard: FC<ProfileCardProps> = ({
         <div className="bg-white/10 backdrop-blur-md p-4 absolute bottom-0 w-full grid gap-4 rounded-3xl">
           <button
             type="button"
-            className="block mx-auto text-white"
+            className="block mx-auto text-white transition-transform duration-300"
             onClick={() => setShow(!show)}
           >
-            <MdArrowUpward />
+            <MdArrowUpward
+              className={`transform transition-transform duration-300 ${
+                show ? "rotate-180" : "rotate-0"
+              }`}
+            />
           </button>
+
           <div className="flex gap-2 items-center justify-between">
             <div>
               <p className="text-white text-xl font-bold">{userName}</p>
@@ -55,8 +60,15 @@ const ProfileCard: FC<ProfileCardProps> = ({
               <MdCreate />
             </span>
           </div>
-          {show && (
-            <div>
+
+          <div
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${
+              show
+                ? "max-h-96 opacity-100 translate-y-0"
+                : "max-h-0 opacity-0 -translate-y-2"
+            }`}
+          >
+            <div className="mt-4">
               <div className="flex gap-2 flex-wrap">
                 {userTags.map((tag, index) => (
                   <p
@@ -74,7 +86,7 @@ const ProfileCard: FC<ProfileCardProps> = ({
                 <Button className="bg-blue-700 text-white">Hire</Button>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </CardContent>
     </Card>
