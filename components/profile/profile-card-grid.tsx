@@ -1,6 +1,10 @@
+"use client";
+import { useMemo, useState } from "react";
 import ProfileCard from "./profile-card";
+import ProfileCardSort from "./profile-card-sort";
+import { SortCriteria, User } from "@/type";
 
-const userData = [
+const userData: User[] = [
   {
     id: 1,
     name: "Arun Kumar",
@@ -52,17 +56,38 @@ const userData = [
 ];
 
 const ProfileCardGrid = () => {
+  const [sortCriteria, setSortCriteria] = useState<SortCriteria>({
+    sortBy: "name",
+    order: "asc",
+  });
+
+  // ✅ Only sort when needed, no extra state
+  const sortedData = useMemo(() => {
+    return [...userData].sort((a, b) => {
+      const valA = a[sortCriteria.sortBy];
+      const valB = b[sortCriteria.sortBy];
+
+      if (valA < valB) return sortCriteria.order === "asc" ? -1 : 1;
+      if (valA > valB) return sortCriteria.order === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [sortCriteria]);
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 lg:px-0">
-      {userData.map((user) => (
-        <ProfileCard
-          key={user.id}
-          userName={user.name}
-          userEmail={user.email}
-          userTags={user.tags}
-        />
-      ))}
-    </div>
+    <>
+      <ProfileCardSort sortCriteria={sortCriteria} onChange={setSortCriteria} />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 lg:px-0">
+        {sortedData.map((user) => (
+          <ProfileCard
+            key={user.id}
+            userName={user.name}
+            userEmail={user.email}
+            userTags={user.tags}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
